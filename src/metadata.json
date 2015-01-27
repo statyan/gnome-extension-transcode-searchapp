@@ -1,1 +1,8 @@
-{"shell-version": ["3.14.3"], "uuid": "transcode-appsearch@k.kubusha@gmail.com", "name": "TranscodeAppSearch", "description": "Searching apps both direct and transcoded name"}
+{
+  "shell-version": ["3.14.3"], 
+  "uuid": "transcode-appsearch@k.kubusha@gmail.com", 
+  "name": "TranscodeAppSearch", 
+  "description": "Searching apps both direct and transcoded name",
+  "url": "https://github.com/statyan/gnome-extension-transcode-searchapp",
+  "version": 1
+}
