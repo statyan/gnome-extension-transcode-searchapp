@@ -44,7 +44,7 @@ const TrancodeRusToEngDict = {
 const TrancodeEngToRusDict = {};
 
 function generateIvertedDict(sourceDict, destDict) {
-    for(sourceindex in sourceDict)  {
+    for(let sourceindex in sourceDict)  {
         destDict[sourceDict[sourceindex]] = sourceindex;
     }
 }
