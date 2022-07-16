@@ -29,10 +29,10 @@
     "3.38",
     "3.39",
     "40",
-    "41".
+    "41",
     "42"
   ], 
   "url": "https://github.com/statyan/gnome-extension-transcode-searchapp", 
   "uuid": "transcode-appsearch@k.kubusha@gmail.com", 
-  "version": 3
+  "version": 4
 }
