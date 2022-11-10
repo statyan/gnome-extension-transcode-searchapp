@@ -2,6 +2,10 @@ const Gio = imports.gi.Gio;
 const Shell = imports.gi.Shell;
 const AppDisplay = imports.ui.appDisplay;
 
+// Get Gnome-shell version
+const Config = imports.misc.config;
+const [major, minor] = Config.PACKAGE_VERSION.split('.').map(s => Number(s));
+
 var originalGetInitialResultSet = null;
 
 
@@ -49,8 +53,6 @@ function generateIvertedDict(sourceDict, destDict) {
     }
 }
 
-
-
 function transcode(source, dict) {
     source = source.toLowerCase();
     let result = '';
@@ -81,7 +83,10 @@ function getResultSet(terms, callback, cancellable) {
             return usage.compare('', a, b);
         }));
     });
-    callback(results);
+    if (major >= 43)
+        return results;
+    else
+        callback(results);
 }
 
 function init() {
