@@ -80,7 +80,10 @@ function getResultSet(terms, callback, cancellable) {
             return app && app.should_show();
         });
         results = results.concat(group.sort(function(a, b) {
-            return usage.compare('', a, b);
+            if (major >= 44)
+                return usage.compare(a, b);
+            else
+                return usage.compare('', a, b);
         }));
     });
     if (major >= 43)
