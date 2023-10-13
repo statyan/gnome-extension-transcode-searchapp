@@ -1,12 +1,8 @@
-const Gio = imports.gi.Gio;
-const Shell = imports.gi.Shell;
-const AppDisplay = imports.ui.appDisplay;
+import Gio from 'gi://Gio';
+import Shell from 'gi://Shell';
+import * as AppDisplay from 'resource:///org/gnome/shell/ui/appDisplay.js';
 
-// Get Gnome-shell version
-const Config = imports.misc.config;
-const [major, minor] = Config.PACKAGE_VERSION.split('.').map(s => Number(s));
-
-var originalGetInitialResultSet = null;
+let originalGetInitialResultSet = null;
 
 
 const TrancodeRusToEngDict = {
@@ -67,7 +63,7 @@ function transcode(source, dict) {
     return result;
 }
 
-function getResultSet(terms, callback, cancellable) {
+function getResultSet(terms) {
     let query = terms.join(' ');
     let groups = Gio.DesktopAppInfo.search(query);
     groups = groups.concat(Gio.DesktopAppInfo.search(transcode(query, TrancodeRusToEngDict)));
@@ -80,28 +76,20 @@ function getResultSet(terms, callback, cancellable) {
             return app && app.should_show();
         });
         results = results.concat(group.sort(function(a, b) {
-            if (major >= 44)
-                return usage.compare(a, b);
-            else
-                return usage.compare('', a, b);
+            return usage.compare(a, b);
         }));
     });
-    if (major >= 43)
-        return results;
-    else
-        callback(results);
+    return results;
 }
 
-function init() {
-}
-
-function enable() {
-    generateIvertedDict(TrancodeRusToEngDict, TrancodeEngToRusDict);
-    originalGetInitialResultSet = AppDisplay.AppSearchProvider.prototype.getInitialResultSet;
-    AppDisplay.AppSearchProvider.prototype.getInitialResultSet = getResultSet;
-}
-
-function disable() {
-    AppDisplay.AppSearchProvider.prototype.getInitialResultSet = originalGetInitialResultSet;
-    originalGetInitialResultSet = null;
+export default class TranscodeAppSearchExtension {
+    enable() {
+        generateIvertedDict(TrancodeRusToEngDict, TrancodeEngToRusDict);
+        originalGetInitialResultSet = AppDisplay.AppSearchProvider.prototype.getInitialResultSet;
+        AppDisplay.AppSearchProvider.prototype.getInitialResultSet = getResultSet;
+    }
+    disable() {
+        AppDisplay.AppSearchProvider.prototype.getInitialResultSet = originalGetInitialResultSet;
+        originalGetInitialResultSet = null;
+    }
 }
