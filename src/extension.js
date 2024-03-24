@@ -43,7 +43,7 @@ const TrancodeRusToEngDict = {
 
 const TrancodeEngToRusDict = {};
 
-function generateIvertedDict(sourceDict, destDict) {
+function generateInvertedDict(sourceDict, destDict) {
     for(let sourceindex in sourceDict)  {
         destDict[sourceDict[sourceindex]] = sourceindex;
     }
@@ -84,7 +84,7 @@ function getResultSet(terms) {
 
 export default class TranscodeAppSearchExtension {
     enable() {
-        generateIvertedDict(TrancodeRusToEngDict, TrancodeEngToRusDict);
+        generateInvertedDict(TrancodeRusToEngDict, TrancodeEngToRusDict);
         originalGetInitialResultSet = AppDisplay.AppSearchProvider.prototype.getInitialResultSet;
         AppDisplay.AppSearchProvider.prototype.getInitialResultSet = getResultSet;
     }
