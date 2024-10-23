@@ -44,7 +44,7 @@ const cyrillicToLatin = new Map([
     ['я', 'z']
 ]);
 
-const parameters = new Map();
+const latinToCyrillic = new Map();
 
 function generateInvertedDict(sourceMap, destMap) {
     sourceMap.forEach((value, key) => {
@@ -52,9 +52,9 @@ function generateInvertedDict(sourceMap, destMap) {
     });
 }
 
-function transcode(source, map) {
+function transcode(source, transcodeCharMap) {
     source = source.toLowerCase();
-    return [...source].map(char => map.get(char) || char).join('');
+    return [...source].map(char => transcodeCharMap.get(char) || char).join('');
 }
 
 function getResultSet(terms) {
@@ -63,12 +63,12 @@ function getResultSet(terms) {
     const systemCommands = ['restart', 'poweroff', 'shutdown', 'reboot', 'logout'];
 
     if (systemCommands.includes(query.toLowerCase())) {
-        return originalGetInitialResultSet.call(this, terms);
+        return originalGetInitialResultSet.call(AppDisplay.AppSearchProvider, terms);
     }
     try {
         groups = Gio.DesktopAppInfo.search(query);
         groups = groups.concat(Gio.DesktopAppInfo.search(transcode(query, cyrillicToLatin)));
-        groups = groups.concat(Gio.DesktopAppInfo.search(transcode(query, parameters)));
+        groups = groups.concat(Gio.DesktopAppInfo.search(transcode(query, latinToCyrillic)));
     } catch (error) {
         console.error("An error occurred while searching:", error);
     }
@@ -90,7 +90,7 @@ function getResultSet(terms) {
 export default class TranscodeAppSearchExtension {
     enable() {
         if (originalGetInitialResultSet === null) {
-            generateInvertedDict(cyrillicToLatin, parameters);
+            generateInvertedDict(cyrillicToLatin, latinToCyrillic);
             originalGetInitialResultSet = AppDisplay.AppSearchProvider.prototype.getInitialResultSet;
             AppDisplay.AppSearchProvider.prototype.getInitialResultSet = getResultSet;
         }
